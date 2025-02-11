@@ -18,14 +18,14 @@ namespace UserRegClient.Services
         partial void OnDeleteRankList(HttpRequestMessage request);
         partial void OnDeleteRankListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<SpecialistRank>> DeleteRankList(string id)
+        public async Task<IEnumerable<SpecialistRank>> DeleteRankList(string id_rank)
         {
             var uri = new Uri(httpClient.BaseAddress, $"deleteRank");
 
             var uriBuilder = new UriBuilder(uri);
             var queryString = HttpUtility.ParseQueryString(uriBuilder.Query);
 
-            queryString.Add("Id", $"{id}");
+            queryString.Add("Id_rank", $"{id_rank}");
 
             uriBuilder.Query = queryString.ToString();
             uri = uriBuilder.Uri;

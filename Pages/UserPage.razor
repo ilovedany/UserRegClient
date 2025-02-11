@@ -1,0 +1,23 @@
+@page "/userInfo"
+@inject UserRegClient.Services.GetUserService GetUserService
+
+<PageTitle>User Page</PageTitle>
+
+<h1>User Information</h1>
+
+@code{
+    
+    List<User> users = new List<User>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        users = (await GetUserService.GetUserList()).ToList();
+
+        foreach (var user in users)
+        {
+            Console.WriteLine(user);
+        }
+    }
+    
+}    
+

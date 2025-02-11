@@ -6,7 +6,7 @@ namespace UserRegClient.Services
     public partial class GetUserService
     {
         private readonly HttpClient httpClient;
-        private readonly NavigationManager navigationManager;
+        private readonly NavigationManager? navigationManager;
 
         public GetUserService(NavigationManager navigationManager, IHttpClientFactory httpClientFactory)
         {
@@ -17,7 +17,7 @@ namespace UserRegClient.Services
         partial void OnGetUserList(HttpRequestMessage request);
         partial void OnGetUserListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<User>> GetWorkshopList()
+        public async Task<IEnumerable<User>> GetUserList()
         {
             var uri = new Uri(httpClient.BaseAddress, $"getUsers");
 
