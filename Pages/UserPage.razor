@@ -2,15 +2,30 @@
 @inject Services.GetUserService GetUser
 @inject HttpClient Http
 
+@using UserRegClient.Models
 
 <PageTitle>User Page</PageTitle>
 
 <h1>User Information</h1>
 
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@users" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Frozen="true" Width="160px" />
+        <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
+        <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="200px" />
+        <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="120px" />
+
+    </Columns>
+</RadzenDataGrid>
+
+
 @code{
     
     IEnumerable<User>? users;
-    
+
     protected override async Task OnInitializedAsync()
     {
         users = await GetUser.GetUserList();
@@ -19,7 +34,9 @@
         {
             Console.WriteLine(user.Name);
         }
+
     }
     
 }    
+
 

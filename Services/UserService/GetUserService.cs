@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
-
+using UserRegClient.Models;
 namespace UserRegClient.Services
 {
     public partial class GetUserService

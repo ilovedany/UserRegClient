@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using System.Web;
-
+using UserRegClient.Models;
 namespace UserRegClient.Services
 {
     public partial class PutRankService

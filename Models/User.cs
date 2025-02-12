@@ -1,4 +1,4 @@
-namespace UserRegClient
+namespace UserRegClient.Models
 {
     public class User
     {
