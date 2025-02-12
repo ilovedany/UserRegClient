@@ -1,5 +1,7 @@
 @page "/userInfo"
-@inject UserRegClient.Services.GetUserService GetUserService
+@inject Services.GetUserService GetUser
+@inject HttpClient Http
+
 
 <PageTitle>User Page</PageTitle>
 
@@ -7,15 +9,15 @@
 
 @code{
     
-    List<User> users = new List<User>();
+    IEnumerable<User>? users;
     
     protected override async Task OnInitializedAsync()
     {
-        users = (await GetUserService.GetUserList()).ToList();
+        users = await GetUser.GetUserList();
 
         foreach (var user in users)
         {
-            Console.WriteLine(user);
+            Console.WriteLine(user.Name);
         }
     }
     

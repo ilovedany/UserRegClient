@@ -10,7 +10,7 @@ namespace UserRegClient.Services
 
         public GetUserService(NavigationManager navigationManager, IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClientFactory.CreateClient("getUsers");
+            httpClient = httpClientFactory.CreateClient("getUsers");
             this.navigationManager = navigationManager;
         }
 
