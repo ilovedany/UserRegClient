@@ -16,5 +16,6 @@ builder.Services.AddHttpClient("UserRegClient", client => client.BaseAddress = n
 builder.Services.AddHttpClient("getUsers", client => client.BaseAddress = new Uri("http://localhost:5257/"));
 builder.Services.AddScoped<GetUserService>();
 
-
+builder.Services.AddHttpClient("searchRank", client => client.BaseAddress = new Uri("http://localhost:5257/"));
+builder.Services.AddScoped<GetRankToIDService>();
 await builder.Build().RunAsync();

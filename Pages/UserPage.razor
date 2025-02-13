@@ -1,5 +1,8 @@
 @page "/userInfo"
 @inject Services.GetUserService GetUser
+@inject Services.GetRankToIDService GetRank
+
+@using System.Collections.ObjectModel;
 @inject HttpClient Http
 
 @using UserRegClient.Models
@@ -9,34 +12,74 @@
 <h1>User Information</h1>
 
 
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@users" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
-    <Columns>
-        <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Frozen="true" Width="160px" />
-        <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
-        <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="200px" />
-        <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="120px" />
-
-    </Columns>
-</RadzenDataGrid>
-
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{    
+    <RadzenRow Gap="1rem">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="@SelectedUsers">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
+                    <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
+                    <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
+                    <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="160px" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6">
+                <RadzenStack Gap="1rem">
+                    User Rank
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault().SpecialistRank">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(SpecialistRank.Rank)" Title="Rank" Width="160px" />
+                        </Columns>
+                     </RadzenDataGrid>
+                </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+}
 
 @code{
+    User user = new User();
+    IEnumerable<User> users;
+    IEnumerable<SpecialistRank> ranks;
+    IList<User> SelectedUsers { get; set; }
     
-    IEnumerable<User>? users;
+
+
 
     protected override async Task OnInitializedAsync()
     {
-        users = await GetUser.GetUserList();
+        users = await Task.Run(() => GetUser.GetUserList());
 
-        foreach (var user in users)
-        {
-            Console.WriteLine(user.Name);
+        foreach(var c in users){
+
+            var operation = new User() { Id = c.Id};
+            ranks = await Task.Run(()=> GetRank.GetRankToIdList(c.Id));
+            var props = new ObservableCollection<SpecialistRank>();
+
+            foreach(var p in props){
+                props.Add(p);
+            }
+            if (props.Count > 0)
+            {
+                operation.SpecialistRank = props;
+
+            }
+
+
         }
 
     }
+
     
 }    
 
+
+    
 
