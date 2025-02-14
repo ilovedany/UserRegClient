@@ -8,7 +8,6 @@
 @using UserRegClient.Models
 
 <PageTitle>User Page</PageTitle>
-
 <h1>User Information</h1>
 
 
@@ -45,94 +44,24 @@ else
 }
 
 @code{
-    User user = new User();
-    IList<User> users;
-    List<User> users1 = new List<User>();
-    
-    IList<SpecialistRank> ranks;
-    IList<User> SelectedUsers { get; set; }
-    
-
-
-/*
+    IList<User>? SelectedUsers { get; set; }
+    IList<User>? getRankGrid = new List<User> { };
+    protected IEnumerable<User>? users;
+    protected IEnumerable<SpecialistRank>? specialistRanks;
     protected override async Task OnInitializedAsync()
     {
         users = await GetUser.GetUserList();
 
         foreach(var c in users){
-            
-            ranks = await GetRank.GetRankToIdList(c.Id);
-            Console.WriteLine(ranks.Count().ToString()+c.Id);
-            var props = new List<SpecialistRank>();
-            
-            foreach(var p in ranks){
-                props.Add(p);
+            specialistRanks = await GetRank.GetRankToIdList(c.Id);
 
+            if(specialistRanks != null){
+                 c.SpecialistRank = specialistRanks.ToList<SpecialistRank>();
             }
-            if (props.Count > 0)
-            {
-                c.SpecialistRank = props;
-
-            }
-            users1.Add(c);
-            
+            getRankGrid.Add(c);
         }
-        foreach(var user in users1){
-            
-            Console.WriteLine(user.Name);
-            
-
-            
-        }
-
+       SelectedUsers = new List<User>(){getRankGrid.FirstOrDefault()}; 
     }
-*/
-protected override async Task OnInitializedAsync()
-    {
-        users = await GetUser.GetUserList();
-        foreach(var c in users){
-
-            try
-            {
-                ranks = await GetRank.GetRankToIdList(c.Id);
-                
-                if (ranks != null)
-                {
-                    var props = new List<SpecialistRank>();
-                    
-                    foreach(var p in ranks){
-                        props.Add(p);
-
-                    }       
-                    if (props.Count > 0)
-                    {
-
-                        c.SpecialistRank = props;
-
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-
-            }
-
-            /*Opers?.*/
-            users1.Add(c);
-
-            }
-            
-
-        
-    }
-    
-
-    }
-
-    
 }    
 
 
