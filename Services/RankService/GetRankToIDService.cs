@@ -18,7 +18,7 @@ namespace UserRegClient.Services
         partial void OnGetRankToIDList(HttpRequestMessage request);
         partial void OnGetRankToIDListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<SpecialistRank>> GetRankToIdList(int id)
+        public async Task<List<SpecialistRank>> GetRankToIdList(int id)
         {
            var uri = new Uri(httpClient.BaseAddress, $"searchRank");
 
@@ -41,7 +41,7 @@ namespace UserRegClient.Services
             OnGetRankToIDListResponse(response);
 
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<SpecialistRank>>();
+            return await response.Content.ReadFromJsonAsync<List<SpecialistRank>>();
         }
     }
 }

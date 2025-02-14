@@ -17,7 +17,7 @@ namespace UserRegClient.Services
         partial void OnGetUserList(HttpRequestMessage request);
         partial void OnGetUserListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<User>> GetUserList()
+        public async Task<List<User>> GetUserList()
         {
             var uri = new Uri(httpClient.BaseAddress, $"getUsers");
 
@@ -31,7 +31,7 @@ namespace UserRegClient.Services
 
             OnGetUserListResponse(response);
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<User>>();
+            return await response.Content.ReadFromJsonAsync<List<User>>();
         }
     }
 }

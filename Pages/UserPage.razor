@@ -20,7 +20,7 @@ else
 {    
     <RadzenRow Gap="1rem">
         <RadzenColumn Size="12" SizeMD="6">
-            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="@SelectedUsers">
+            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers">
                 <Columns>
                     <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
                     <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
@@ -33,12 +33,12 @@ else
         <RadzenColumn Size="12" SizeMD="6">
                 <RadzenStack Gap="1rem">
                     User Rank
-                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault().SpecialistRank">
+                 <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault()?.SpecialistRank">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Rank)" Title="Rank" Width="160px" />
                         </Columns>
-                     </RadzenDataGrid>
+                     </RadzenDataGrid> 
                 </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
@@ -46,34 +46,89 @@ else
 
 @code{
     User user = new User();
-    IEnumerable<User> users;
-    IEnumerable<SpecialistRank> ranks;
+    IList<User> users;
+    List<User> users1 = new List<User>();
+    
+    IList<SpecialistRank> ranks;
     IList<User> SelectedUsers { get; set; }
     
 
 
-
+/*
     protected override async Task OnInitializedAsync()
     {
-        users = await Task.Run(() => GetUser.GetUserList());
+        users = await GetUser.GetUserList();
 
         foreach(var c in users){
-
-            var operation = new User() { Id = c.Id};
-            ranks = await Task.Run(()=> GetRank.GetRankToIdList(c.Id));
-            var props = new ObservableCollection<SpecialistRank>();
-
-            foreach(var p in props){
+            
+            ranks = await GetRank.GetRankToIdList(c.Id);
+            Console.WriteLine(ranks.Count().ToString()+c.Id);
+            var props = new List<SpecialistRank>();
+            
+            foreach(var p in ranks){
                 props.Add(p);
+
             }
             if (props.Count > 0)
             {
-                operation.SpecialistRank = props;
+                c.SpecialistRank = props;
+
+            }
+            users1.Add(c);
+            
+        }
+        foreach(var user in users1){
+            
+            Console.WriteLine(user.Name);
+            
+
+            
+        }
+
+    }
+*/
+protected override async Task OnInitializedAsync()
+    {
+        users = await GetUser.GetUserList();
+        foreach(var c in users){
+
+            try
+            {
+                ranks = await GetRank.GetRankToIdList(c.Id);
+                
+                if (ranks != null)
+                {
+                    var props = new List<SpecialistRank>();
+                    
+                    foreach(var p in ranks){
+                        props.Add(p);
+
+                    }       
+                    if (props.Count > 0)
+                    {
+
+                        c.SpecialistRank = props;
+
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
 
             }
 
+            /*Opers?.*/
+            users1.Add(c);
 
-        }
+            }
+            
+
+        
+    }
+    
 
     }
 

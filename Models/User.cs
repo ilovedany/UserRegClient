@@ -12,7 +12,7 @@ namespace UserRegClient.Models
         public int Age{get; set;}
 
         public string Email{get; set;}
-        public ObservableCollection<SpecialistRank> SpecialistRank { get; set; }
+        public List<SpecialistRank> SpecialistRank { get; set; }
     }
 }
 
