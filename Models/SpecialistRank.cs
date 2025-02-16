@@ -3,11 +3,8 @@
     public class SpecialistRank
     {
         public int Id_rank { get; set; }
-        
         public string Rank { get; set; }
-    
         public int Id { get; set; }
-
     }
 }
 
