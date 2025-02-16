@@ -11,11 +11,6 @@
 <PageTitle>User Page</PageTitle>
 <h1>User Information</h1>
 
-<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
-    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка добавить")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
-    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка изменить")) Text="Изменить" ButtonStyle="ButtonStyle.Secondary" />
-    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка удалить")) Text="Удалить" ButtonStyle="ButtonStyle.Base" />
-</RadzenStack>
 
 @if (users == null)
 {
@@ -23,23 +18,39 @@
 }
 else
 {   
-
-
     <RadzenRow Gap="1rem">
         <RadzenColumn Size="12" SizeMD="6">
-            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers">
-                <Columns>
-                    <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
-                    <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
-                    <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
-                    <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
-                    <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="160px" />
-                </Columns>
-            </RadzenDataGrid>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 10px;">
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка добавить")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка изменить")) Text="Изменить" ButtonStyle="ButtonStyle.Secondary" />
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка удалить")) Text="Удалить" ButtonStyle="ButtonStyle.Base" />
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
+                        <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="160px" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenRow>
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="6">
+            <h3>User Rank</h3>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 10px;">
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка добавить")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка изменить")) Text="Изменить" ButtonStyle="ButtonStyle.Secondary" />
+                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка удалить")) Text="Удалить" ButtonStyle="ButtonStyle.Base" />
+                </RadzenStack>
+            </RadzenRow>
+
+            <RadzenRow>
                 <RadzenStack Gap="1rem">
-                    <h3>User Rank</h3>
                  <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault()?.SpecialistRank">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
@@ -47,6 +58,8 @@ else
                         </Columns>
                      </RadzenDataGrid> 
                 </RadzenStack>
+            </RadzenRow>
+                
         </RadzenColumn>
     </RadzenRow>
 }

@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+
 namespace UserRegClient.Models
 {
     public class User
