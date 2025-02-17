@@ -18,7 +18,7 @@ namespace UserRegClient.Services
         partial void OnDeleteUserList(HttpRequestMessage request);
         partial void OnDeleteUserListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<User>> DeleteUserList(string id)
+        public async Task<IEnumerable<User>> DeleteUserList(int id)
         {
             var uri = new Uri(httpClient.BaseAddress, $"deleteUser");
 

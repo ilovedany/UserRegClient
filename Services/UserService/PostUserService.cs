@@ -18,7 +18,7 @@ namespace UserRegClient.Services
         partial void OnPostUserList(HttpRequestMessage request);
         partial void OnPostUserListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<User>> PostUserList(string name, string surname,int age,string email)
+        public async Task<IEnumerable<User>> PostUserList(string name, string surname,string age,string email)
         {
             var uri = new Uri(httpClient.BaseAddress, $"addUser");
 

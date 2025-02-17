@@ -1,15 +1,17 @@
 @page "/userInfo"
 @inject Services.GetUserService GetUser
 @inject Services.GetRankToIDService GetRank
-
-@using System.Collections.ObjectModel;
+@inject Services.DeleteUserService DelUser
+@inject Services.PutUserService PutUser
+@inject DialogService DialogService
 @inject HttpClient Http
-
-@inject NotificationService NotificationService
+@inject Services.PostUserService PostUser
 @using UserRegClient.Models
 
 <PageTitle>User Page</PageTitle>
 <h1>User Information</h1>
+
+
 
 
 @if (users == null)
@@ -22,15 +24,15 @@ else
         <RadzenColumn Size="12" SizeMD="6">
             <RadzenRow>
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 10px;">
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка добавить")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка изменить")) Text="Изменить" ButtonStyle="ButtonStyle.Secondary" />
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка удалить")) Text="Удалить" ButtonStyle="ButtonStyle.Base" />
+                    <RadzenButton Click="ShowPostDialog" Text="Добавить" Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click="ShowPutDialog" Text="Изменить" Icon="edit" ButtonStyle="ButtonStyle.Success" />
+                    <RadzenButton Click="ShowDelDialog" Text="Удалить" Icon="delete" ButtonStyle="ButtonStyle.Danger" />
                 </RadzenStack>
             </RadzenRow>
             <RadzenRow>
                 <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers">
                     <Columns>
-                        <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
                         <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
                         <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
                         <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
@@ -42,18 +44,10 @@ else
         <RadzenColumn Size="12" SizeMD="6">
             <h3>User Rank</h3>
             <RadzenRow>
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 10px;">
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка добавить")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка изменить")) Text="Изменить" ButtonStyle="ButtonStyle.Secondary" />
-                    <RadzenButton Variant="Variant.Outlined" Click=@(args => OnClick("Я кнопка удалить")) Text="Удалить" ButtonStyle="ButtonStyle.Base" />
-                </RadzenStack>
-            </RadzenRow>
-
-            <RadzenRow>
                 <RadzenStack Gap="1rem">
                  <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault()?.SpecialistRank">
                         <Columns>
-                            <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Width="80px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Rank)" Title="Rank" Width="160px" />
                         </Columns>
                      </RadzenDataGrid> 
@@ -63,6 +57,76 @@ else
         </RadzenColumn>
     </RadzenRow>
 }
+
+@code{
+    async Task ShowDelDialog()
+    {
+        var result = await DialogService.OpenAsync("Удаление пользователя", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <p>Уверены, что хотите удалить данную строку?</p>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
+                            <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
+                            <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="160px" />
+                        </Columns>
+                     </RadzenDataGrid> 
+                </RadzenStack>
+            </RadzenStack> 
+            <RadzenButton Text="Да" Click="@(() => { DeleteUser(SelectedUsers.FirstOrDefault().Id); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+            <RadzenButton Text="Нет" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>);
+    }
+
+
+    async Task ShowPostDialog()
+    {
+        string name = "";
+        string surname = "";
+        string age = "";
+        string email= "";
+        var result = await DialogService.OpenAsync("Добавление пользователя", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <p>Введите в поля данные</p>
+        
+            
+            <RadzenTextBox Placeholder="Имя" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="name" />
+            <RadzenTextBox Placeholder="Фамилия" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="surname"/>
+            <RadzenTextBox Placeholder="Возраст" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="age"/>
+            <RadzenTextBox Placeholder="Email" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="email" />
+
+            <RadzenButton Text="Сохранить" Click="@(() => { AddUser(name,surname,age,email); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+            <RadzenButton Text="Отменить" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>);
+    }
+
+    async Task ShowPutDialog()
+    {
+        string name = "";
+        string surname = "";
+        string age = "";
+        string email= "";
+        var result = await DialogService.OpenAsync($"Изменение пользователя №{SelectedUsers.FirstOrDefault().Id}", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <p>Введите в поля данные</p>
+        
+            
+            <RadzenTextBox Placeholder="Имя" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="name" />
+            <RadzenTextBox Placeholder="Фамилия" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="surname"/>
+            <RadzenTextBox Placeholder="Возраст" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="age"/>
+            <RadzenTextBox Placeholder="Email" Style="width: 100%" aria-label="TextBox with placeholder" @bind-Value="email" />
+
+            <RadzenButton Text="Сохранить" Click="@(() => { ChangeUser(name,surname,age,email,SelectedUsers.FirstOrDefault().Id); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+            <RadzenButton Text="Отменить" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>);
+    }
+}
+
+
 
 @code{
     IList<User>? SelectedUsers { get; set; }
@@ -84,10 +148,21 @@ else
        SelectedUsers = new List<User>(){getRankGrid.FirstOrDefault()}; 
     }
 
-    private void OnClick(string text)
-    {
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Кнопка", Detail = text });
+
+    private async Task DeleteUser(int id){
+        await DelUser.DeleteUserList(id);
     }
+    
+    private async Task AddUser(string name, string surname,string age,string email){
+        await PostUser.PostUserList(name,surname,age,email);
+    }
+
+    private async Task ChangeUser(string name, string surname,string age,string email, int id){
+        await PutUser.PutUserList(name,surname,age,email,id);
+    }
+
+
+    
 }    
 
 
