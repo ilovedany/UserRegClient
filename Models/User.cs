@@ -20,6 +20,11 @@ namespace UserRegClient.Models
         Age INT,
         Email VARCHAR(50)
     );
+
+
+    ALTER TABLE users
+    ADD COLUMN XamlData xml;
     */
-    
+
+
     
