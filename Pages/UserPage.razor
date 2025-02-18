@@ -30,7 +30,7 @@ else
                 </RadzenStack>
             </RadzenRow>
             <RadzenRow>
-                <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers">
+                <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@users" @bind-Value="SelectedUsers" Style="z-index: 0;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(User.Id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
                         <RadzenDataGridColumn Property="@nameof(User.Name)" Title="Name" Width="160px" />
@@ -45,7 +45,7 @@ else
             <h3>User Rank</h3>
             <RadzenRow>
                 <RadzenStack Gap="1rem">
-                 <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault()?.SpecialistRank">
+                 <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedUsers.FirstOrDefault()?.SpecialistRank" Style="z-index: 0;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Id_rank)" Filterable="false" Title="Id_rank" Width="80px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn Property="@nameof(SpecialistRank.Rank)" Title="Rank" Width="160px" />
@@ -167,4 +167,3 @@ else
 
 
     
-
