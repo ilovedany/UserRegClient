@@ -3,6 +3,7 @@
 @inject Services.GetRankToIDService GetRank
 @inject Services.DeleteUserService DelUser
 @inject Services.PutUserService PutUser
+@inject Services.XamlUserService GetXmlSer
 @inject DialogService DialogService
 @inject HttpClient Http
 @inject Services.PostUserService PostUser
@@ -37,8 +38,17 @@ else
                         <RadzenDataGridColumn Property="@nameof(User.Surname)" Title="Surname" Width="160px"/>
                         <RadzenDataGridColumn Property="@nameof(User.Age)" Title="Age" Width="120px" />
                         <RadzenDataGridColumn Property="@nameof(User.Email)" Title="Email" Width="160px" />
+
+                        <RadzenDataGridColumn Width="160px" Property="OrderID" Title="Xml Data">
+                        <Template Context="data">
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="rz-m-1"  Text="" Click="ShowXmlDialog" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                        
                     </Columns>
                 </RadzenDataGrid>
+                
             </RadzenRow>
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="6">
@@ -124,6 +134,16 @@ else
             <RadzenButton Text="Отменить" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
         </RadzenStack>);
     }
+    async Task ShowXmlDialog(){
+        xml = await GetXmlSer.GetXml(SelectedUsers.FirstOrDefault().Id);
+        var result = await DialogService.OpenAsync($"Пользователь №{SelectedUsers.FirstOrDefault().Id}", ds =>
+        @<RadzenStack Gap="1.5rem">
+
+            <RadzenText TextStyle="TextStyle.Body1" class="rz-text-truncate"><b>@(xml)</b></RadzenText>
+            
+
+        </RadzenStack>);
+    }
 }
 
 
@@ -132,9 +152,14 @@ else
     IList<User>? SelectedUsers { get; set; }
     IList<User>? getRankGrid = new List<User> { };
     protected IEnumerable<User>? users;
+    protected string? xml;
     protected IEnumerable<SpecialistRank>? specialistRanks;
     protected override async Task OnInitializedAsync()
     {
+
+        
+
+        Console.WriteLine(xml);
         users = await GetUser.GetUserList();
 
         foreach(var c in users){
@@ -161,7 +186,10 @@ else
         await PutUser.PutUserList(name,surname,age,email,id);
     }
 
-
+    private async Task GetXamlUser(int id){
+        await GetXmlSer.GetXml(id);
+    }
+    
     
 }    
 

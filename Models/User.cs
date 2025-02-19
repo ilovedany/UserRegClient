@@ -1,4 +1,5 @@
 
+using System.Xml;
 namespace UserRegClient.Models
 {
     public class User
@@ -8,6 +9,7 @@ namespace UserRegClient.Models
         public string Surname{get; set;}
         public int Age{get; set;}
         public string Email{get; set;}
+        public string XamlData{get; set;}
         public List<SpecialistRank> SpecialistRank { get; set; }
     }
 }

@@ -28,4 +28,7 @@ builder.Services.AddScoped<PostUserService>();
 builder.Services.AddHttpClient("putUser", client => client.BaseAddress = new Uri("http://localhost:5257/"));
 builder.Services.AddScoped<PutUserService>();
 
+builder.Services.AddHttpClient("getXml", client => client.BaseAddress = new Uri("http://localhost:5257/"));
+builder.Services.AddScoped<XamlUserService>();
+
 await builder.Build().RunAsync();
